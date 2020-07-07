@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">RetrofitTest</string>
+    <string name="btn_load_photo">Get photo</string>
+</resources>
