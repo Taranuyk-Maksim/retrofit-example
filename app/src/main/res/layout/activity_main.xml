@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/iv_dogs"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/zero_dp"
+        android:layout_height="@dimen/zero_dp"
         app:layout_constraintBottom_toTopOf="@+id/btn_get_dogs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
