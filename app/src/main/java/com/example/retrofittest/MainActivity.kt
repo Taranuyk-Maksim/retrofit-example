@@ -13,10 +13,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+private const val BASE_URL = "https://dog.ceo/"
 
 class MainActivity : AppCompatActivity() {
 
-    private val BASE_URL = "https://dog.ceo/"
     private lateinit var dogImage: ImageView
     private lateinit var getDogButton: Button
 
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<Model>, response: Response<Model>) {
                 val m: Model? = response.body()
                 Glide
-                    .with(applicationContext)
+                    .with(this@MainActivity)
                     .load(m?.message)
                     .into(dogImage)
             }
