@@ -14,8 +14,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dogImage: ImageView
     private lateinit var getDogButton: Button
-    private val dogsRe = DogsRepositoryImpl()
-
+    lateinit var viewModel : MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         DaggerNetComponent.create().inject(dogsRe)
         super.onCreate(savedInstanceState)
