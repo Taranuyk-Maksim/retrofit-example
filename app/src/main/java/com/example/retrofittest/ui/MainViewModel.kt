@@ -13,11 +13,13 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
 
     var disposable: Disposable? = null
 
-    fun getUrl(callBack: ImageCallBack) {
+    fun getUrl(progress : ProgressBarrCallback,callBack: ImageCallBack) {
         disposable = dogsApiRepository.getDogImageUrl()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map { it.message }
+            .doOnSubscribe { progress.showProgress(true) }
+            .doOnSuccess { progress.showProgress(false) }
             .subscribe({
                 callBack.onComplete(it)
             }, {
@@ -30,7 +32,7 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
             .subscribe({
                 connectionCallBack.isConnect(it)
             }, {
-
+                connectionCallBack.onError(it.localizedMessage)
             })
     }
 
@@ -46,12 +48,18 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
 
     interface ConnectionCallBack {
         fun isConnect(status: Boolean)
+        fun onError(error: String)
+    }
+
+    interface ProgressBarrCallback {
+        fun showProgress(boolean: Boolean)
     }
 
     private fun hasInternetConnection(context: Context): Single<Boolean> {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
         val isConnected: Boolean = activeNetwork?.isConnectedOrConnecting == true
+
         return Single.fromCallable {
             isConnected
         }

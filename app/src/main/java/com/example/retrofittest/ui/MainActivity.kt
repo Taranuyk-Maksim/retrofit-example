@@ -1,9 +1,10 @@
 package com.example.retrofittest.ui
 
 import android.os.Bundle
-import android.os.Message
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var getDogButton: Button
     private var dogsRe = DogsRepositoryImpl()
     lateinit var viewModel: MainViewModel
+    lateinit var process: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         dogImage = findViewById(R.id.iv_dogs)
         getDogButton = findViewById(R.id.btn_get_dogs)
+        process = findViewById(R.id.progressBar)
         getDogButton.setOnClickListener { onClick() }
 
     }
@@ -40,11 +43,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            override fun onError(error: String) {
+                makeToast(error)
+            }
         })
     }
 
     private fun imageUpdate() {
-        viewModel.getUrl(object : MainViewModel.ImageCallBack {
+        viewModel.getUrl(object : MainViewModel.ProgressBarrCallback {
+            override fun showProgress(boolean: Boolean) {
+                if (boolean) {
+                    process.visibility = View.VISIBLE
+                } else {
+                    process.visibility = View.GONE
+
+                }
+            }
+
+        },object : MainViewModel.ImageCallBack {
             override fun onComplete(url: String) {
                 setImage(url)
             }
