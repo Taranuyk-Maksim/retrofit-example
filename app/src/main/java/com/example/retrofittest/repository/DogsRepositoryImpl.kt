@@ -1,8 +1,8 @@
 package com.example.retrofittest.repository
 
+import com.example.retrofittest.net.Model
 import com.example.retrofittest.net.RandomDogApi
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Single
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -11,15 +11,10 @@ class DogsRepositoryImpl : DogsApiRepository {
     @Inject
     lateinit var retrofit: Retrofit
 
-    override fun getDogImageUrl(urlCollback: ImageUrlCallback) {
+    override fun getDogImageUrl(): Single<Model> {
         val randomDogApi: RandomDogApi = retrofit.create(
             RandomDogApi::class.java
         )
-        randomDogApi.getData()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { result ->
-                urlCollback.setUrl(result.message)
-            }
+        return randomDogApi.getData()
     }
 }
