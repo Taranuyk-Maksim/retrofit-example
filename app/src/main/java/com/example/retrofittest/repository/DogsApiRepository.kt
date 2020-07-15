@@ -2,5 +2,5 @@ package com.example.retrofittest.repository
 
 interface DogsApiRepository {
 
-    fun getDogImageUrl() : String
+    fun getDogImageUrl(url : ImageUrlCallback)
 }

@@ -1,21 +1,14 @@
-package com.example.retrofittest
+package com.example.retrofittest.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.retrofittest.R
 import com.example.retrofittest.di.DaggerNetComponent
-import com.example.retrofittest.di.NetModule
-import com.example.retrofittest.net.Model
-import com.example.retrofittest.net.RandomDogApi
 import com.example.retrofittest.repository.DogsRepositoryImpl
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import javax.inject.Inject
+import com.example.retrofittest.repository.ImageUrlCallback
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +27,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onClick() {
-        setImage(dogsRe.getDogImageUrl())
+        dogsRe.getDogImageUrl(object : ImageUrlCallback {
+            override fun setUrl(url: String) {
+                setImage(url)
+            }
+        })
     }
 
     private fun setImage(url: String) {
