@@ -1,6 +1,7 @@
 package com.example.retrofittest.ui
 
 import android.os.Bundle
+import android.os.Message
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                 if (status) {
                     imageUpdate()
                 } else {
-                    Toast.makeText(this@MainActivity, "Error connection", Toast.LENGTH_SHORT).show()
+                    makeToast("Connection error")
                 }
             }
 
@@ -49,10 +50,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onError() {
-                Toast.makeText(this@MainActivity, "Error load image", Toast.LENGTH_SHORT).show()
-
+                makeToast("Error load image")
             }
         })
+    }
+
+    private fun makeToast(message: String) {
+        Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun setImage(url: String) {
