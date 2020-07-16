@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.retrofittest.R
-import com.example.retrofittest.di.DaggerNetComponent
+import com.example.retrofittest.di.components.DaggerNetComponent
 import com.example.retrofittest.repository.DogsRepositoryImpl
 
 class MainActivity : AppCompatActivity() {
@@ -23,14 +23,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = MainViewModel(dogsRe)
-        DaggerNetComponent.create().inject(dogsRe)
         setContentView(R.layout.activity_main)
+        initView()
+        initViewModel()
+        initDagger()
+        getDogButton.setOnClickListener { onClick() }
+
+
+    }
+
+    fun initView() {
         dogImage = findViewById(R.id.iv_dogs)
         getDogButton = findViewById(R.id.btn_get_dogs)
         process = findViewById(R.id.progressBar)
-        getDogButton.setOnClickListener { onClick() }
+    }
+    fun initDagger(){
+        DaggerNetComponent.create().inject(dogsRe)
+    }
 
+    fun initViewModel() {
+        viewModel = MainViewModel(dogsRe)
         viewModel.liveData.observe(this, Observer {
             if (it == null) makeToast("Error load image")
             else setImage(it)

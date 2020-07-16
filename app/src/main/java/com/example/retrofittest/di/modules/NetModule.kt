@@ -1,4 +1,4 @@
-package com.example.retrofittest.di
+package com.example.retrofittest.di.modules
 
 import dagger.Module
 import dagger.Provides
