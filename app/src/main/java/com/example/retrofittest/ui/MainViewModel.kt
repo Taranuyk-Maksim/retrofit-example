@@ -2,6 +2,8 @@ package com.example.retrofittest.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.retrofittest.repository.DogsApiRepository
 import io.reactivex.Single
@@ -12,18 +14,19 @@ import io.reactivex.schedulers.Schedulers
 class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewModel() {
 
     var disposable: Disposable? = null
+    val liveData = MutableLiveData<String>()
 
-    fun getUrl(progress : ProgressBarrCallback,callBack: ImageCallBack) {
+    fun getUrl(progress : ProgressBarrCallback) {
         disposable = dogsApiRepository.getDogImageUrl()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .map { it.message }
             .doOnSubscribe { progress.showProgress(true) }
             .doOnSuccess { progress.showProgress(false) }
+            .map { it.message }
             .subscribe({
-                callBack.onComplete(it)
+                liveData.value = it
             }, {
-                callBack.onError()
+                liveData.value = null
             })
     }
 
@@ -36,13 +39,7 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
             })
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        disposable?.dispose()
-    }
-
     interface ImageCallBack {
-        fun onComplete(url: String)
         fun onError()
     }
 
@@ -65,5 +62,10 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
         }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable?.dispose()
     }
 }

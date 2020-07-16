@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.example.retrofittest.R
 import com.example.retrofittest.di.DaggerNetComponent
@@ -30,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         process = findViewById(R.id.progressBar)
         getDogButton.setOnClickListener { onClick() }
 
+        viewModel.liveData.observe(this, Observer {
+            if (it == null) makeToast("Error load image")
+            else setImage(it)
+        })
     }
 
     private fun onClick() {
@@ -37,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.isConnect(this, object : MainViewModel.ConnectionCallBack {
             override fun isConnect(status: Boolean) {
                 if (status) {
-                    imageUpdate()
+                    setProgressVisibility()
                 } else {
                     makeToast("Connection error")
                 }
@@ -49,24 +54,14 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun imageUpdate() {
+    private fun setProgressVisibility() {
         viewModel.getUrl(object : MainViewModel.ProgressBarrCallback {
             override fun showProgress(boolean: Boolean) {
                 if (boolean) {
                     process.visibility = View.VISIBLE
                 } else {
                     process.visibility = View.GONE
-
                 }
-            }
-
-        },object : MainViewModel.ImageCallBack {
-            override fun onComplete(url: String) {
-                setImage(url)
-            }
-
-            override fun onError() {
-                makeToast("Error load image")
             }
         })
     }
