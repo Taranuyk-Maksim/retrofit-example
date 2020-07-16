@@ -2,7 +2,6 @@ package com.example.retrofittest.ui
 
 import android.content.Context
 import android.net.ConnectivityManager
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.retrofittest.repository.DogsApiRepository
@@ -13,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 
 class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewModel() {
 
-    var disposable: Disposable? = null
+    private var disposable: Disposable? = null
     val liveData = MutableLiveData<String>()
 
     fun getUrl(progress : ProgressBarrCallback) {
@@ -37,10 +36,6 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
             }, {
                 connectionCallBack.onError(it.localizedMessage)
             })
-    }
-
-    interface ImageCallBack {
-        fun onError()
     }
 
     interface ConnectionCallBack {
