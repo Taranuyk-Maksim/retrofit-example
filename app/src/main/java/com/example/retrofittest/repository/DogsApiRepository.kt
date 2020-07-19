@@ -6,4 +6,5 @@ import io.reactivex.Single
 interface DogsApiRepository {
 
     fun getDogImageUrl(): Single<Model>
+
 }

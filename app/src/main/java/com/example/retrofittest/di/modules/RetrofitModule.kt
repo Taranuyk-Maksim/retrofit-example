@@ -1,5 +1,8 @@
 package com.example.retrofittest.di.modules
 
+import com.example.retrofittest.repository.DogsRepositoryImpl
+import com.example.retrofittest.ui.MainActivity
+import com.example.retrofittest.ui.MainViewModel
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -13,13 +16,22 @@ private const val BASE_URL = "https://dog.ceo/"
 @Module
 class NetModule {
 
-    @Provides
     @Singleton
+    @Provides
     fun provideNetUtils(): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(BASE_URL)
             .build()
+    }
+
+    @Provides
+    fun provideRepository() : DogsRepositoryImpl{
+        return DogsRepositoryImpl()
+    }
+    @Provides
+    fun provideViewModel(repository: DogsRepositoryImpl) : MainViewModel {
+        return MainViewModel(repository)
     }
 }

@@ -4,18 +4,23 @@ import android.content.Context
 import android.net.ConnectivityManager
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.retrofittest.App
 import com.example.retrofittest.repository.DogsApiRepository
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewModel() {
+class MainViewModel @Inject constructor(var dogsApiRepository: DogsApiRepository): ViewModel() {
 
+    init {
+        App.dager.inject(this)
+    }
     private var disposable: Disposable? = null
     val liveData = MutableLiveData<String>()
 
-    fun getUrl(progress : ProgressBarrCallback) {
+    fun getUrl(progress: ProgressBarrCallback) {
         disposable = dogsApiRepository.getDogImageUrl()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -38,15 +43,6 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
             })
     }
 
-    interface ConnectionCallBack {
-        fun isConnect(status: Boolean)
-        fun onError(error: String)
-    }
-
-    interface ProgressBarrCallback {
-        fun showProgress(boolean: Boolean)
-    }
-
     private fun hasInternetConnection(context: Context): Single<Boolean> {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = cm.activeNetworkInfo
@@ -62,5 +58,14 @@ class MainViewModel(private val dogsApiRepository: DogsApiRepository) : ViewMode
     override fun onCleared() {
         super.onCleared()
         disposable?.dispose()
+    }
+
+    interface ConnectionCallBack {
+        fun isConnect(status: Boolean)
+        fun onError(error: String)
+    }
+
+    interface ProgressBarrCallback {
+        fun showProgress(boolean: Boolean)
     }
 }

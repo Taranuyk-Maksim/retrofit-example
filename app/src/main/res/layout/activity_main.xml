@@ -18,23 +18,50 @@
 
     <Button
         android:id="@+id/btn_get_dogs"
-        android:layout_width="wrap_content"
+        android:layout_width="135dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_bottom_for_button"
+        android:layout_marginBottom="48dp"
         android:text="@string/btn_load_photo"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_dogs"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_dogs" />
+
+    <Button
+        android:id="@+id/btn_run_service"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:text="Run Service"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_get_dogs"
+        app:layout_constraintStart_toEndOf="@+id/btn_get_dogs"
+        app:layout_constraintTop_toTopOf="@+id/btn_get_dogs" />
+
+    <Button
+        android:id="@+id/btn_show_images"
+        android:layout_width="136dp"
+        android:layout_height="wrap_content"
+        android:text="show Images"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_run_service"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_run_service"
+        app:layout_constraintTop_toTopOf="@+id/btn_run_service" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_all_photos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_run_service"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
