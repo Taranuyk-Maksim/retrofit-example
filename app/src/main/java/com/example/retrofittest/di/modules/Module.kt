@@ -1,7 +1,6 @@
 package com.example.retrofittest.di.modules
 
 import com.example.retrofittest.repository.DogsRepositoryImpl
-import com.example.retrofittest.ui.MainActivity
 import com.example.retrofittest.ui.MainViewModel
 import dagger.Module
 import dagger.Provides
@@ -27,11 +26,12 @@ class NetModule {
     }
 
     @Provides
-    fun provideRepository() : DogsRepositoryImpl{
-        return DogsRepositoryImpl()
+    fun provideRepository(retrofit: Retrofit): DogsRepositoryImpl {
+        return DogsRepositoryImpl(retrofit)
     }
+
     @Provides
-    fun provideViewModel(repository: DogsRepositoryImpl) : MainViewModel {
+    fun provideViewModel(repository: DogsRepositoryImpl): MainViewModel {
         return MainViewModel(repository)
     }
 }

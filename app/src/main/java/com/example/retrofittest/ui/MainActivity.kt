@@ -3,7 +3,6 @@ package com.example.retrofittest.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -13,13 +12,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.bumptech.glide.Glide
 import com.example.retrofittest.App
 import com.example.retrofittest.R
 import com.example.retrofittest.adapters.DogsAdapter
-import com.example.retrofittest.di.components.DaggerNetComponent
 import com.example.retrofittest.repository.DogsRepositoryImpl
 import com.example.retrofittest.service.BackService
+import com.example.retrofittest.workmanager.LoadPhotoWorker
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -34,14 +36,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dogImage: ImageView
     private lateinit var getDogButton: Button
     private lateinit var runServiceButton: Button
+    private lateinit var stopServiceButton: Button
     private lateinit var showImages: Button
-
 
     lateinit var process: ProgressBar
     lateinit var recycler: RecyclerView
 
     @Inject
-    lateinit var repo : DogsRepositoryImpl
+    lateinit var repo: DogsRepositoryImpl
+
     @Inject
     lateinit var viewModel: MainViewModel
 
@@ -52,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         initView()
         initViewModel()
         initRecycler(arrayListOf(""))
+        val intent = Intent(this, BackService::class.java)
 
         getDogButton.setOnClickListener {
             recycler.visibility = View.INVISIBLE
@@ -65,11 +69,23 @@ class MainActivity : AppCompatActivity() {
 
             initRecycler(getDataFromStorage(ARRAY_URLS))
         }
+        val loadPhotoRequest = OneTimeWorkRequestBuilder<LoadPhotoWorker>().build()
 
         runServiceButton.setOnClickListener {
-            val intent = Intent(this, BackService::class.java)
-            startService(intent)
+         //   startService(intent)
+            WorkManager
+                .getInstance(this)
+                .enqueue(loadPhotoRequest)
         }
+
+        stopServiceButton.setOnClickListener {
+            stopService(intent)
+        }
+
+
+//        WorkManager
+//            .getInstance(this)
+//            .enqueue(loadPhotoRequest)
 
     }
 
@@ -79,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         getDogButton = findViewById(R.id.btn_get_dogs)
         process = findViewById(R.id.progressBar)
         runServiceButton = findViewById(R.id.btn_run_service)
+        stopServiceButton = findViewById(R.id.btn_stop_service)
 
     }
 
@@ -89,7 +106,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initDagger() {
-        App.dager.inject(this)
+        App.dagger.inject(this)
 
     }
 
@@ -99,6 +116,7 @@ class MainActivity : AppCompatActivity() {
             else setImage(it)
         })
     }
+
 
     private fun onClick() {
 
@@ -149,9 +167,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setImage(url: String) {
-        Glide
-            .with(this)
+        Glide.with(this)
             .load(url)
+            .placeholder(R.drawable.ic_launcher_foreground)
+            .error(R.drawable.ic_launcher_background)
             .into(dogImage)
     }
 }

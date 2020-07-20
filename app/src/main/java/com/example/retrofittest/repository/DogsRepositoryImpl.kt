@@ -7,15 +7,18 @@ import io.reactivex.Single
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-class DogsRepositoryImpl @Inject constructor(): DogsApiRepository {
-    @Inject
-    lateinit var retrofit: Retrofit
+class DogsRepositoryImpl @Inject constructor(var retrofit: Retrofit): DogsApiRepository {
+
 
     override fun getDogImageUrl(): Single<Model> {
-        App.dager.inject(this)
+
         val randomDogApi: RandomDogApi = retrofit.create(
             RandomDogApi::class.java
         )
         return randomDogApi.getData()
+    }
+
+    init {
+        App.dagger.inject(this)
     }
 }

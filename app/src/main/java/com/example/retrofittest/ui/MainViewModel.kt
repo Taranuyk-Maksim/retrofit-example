@@ -15,9 +15,11 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(var dogsApiRepository: DogsApiRepository): ViewModel() {
 
     init {
-        App.dager.inject(this)
+        App.dagger.inject(this)
     }
+
     private var disposable: Disposable? = null
+
     val liveData = MutableLiveData<String>()
 
     fun getUrl(progress: ProgressBarrCallback) {
